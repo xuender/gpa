@@ -17,6 +17,8 @@ func TestNewIndexService(t *testing.T) {
 	t.Parallel()
 
 	index := gpa.NewIndexService[*pb_test.Book](filepath.Join(os.TempDir(), shortuuid.New()))
+	defer index.Close()
+
 	assert.NotNil(t, index)
 }
 
@@ -24,6 +26,8 @@ func TestIndexService_Index(t *testing.T) {
 	t.Parallel()
 
 	index := gpa.NewIndexService[*pb_test.Book](filepath.Join(os.TempDir(), shortuuid.New()))
+	defer index.Close()
+
 	assert.Nil(t, index.Index([]*pb_test.Book{{Id: 1, Name: "t1"}, {Id: 2}}))
 }
 
@@ -31,6 +35,8 @@ func TestIndexService_Query(t *testing.T) {
 	t.Parallel()
 
 	index := gpa.NewIndexService[*pb_test.Book](filepath.Join(os.TempDir(), shortuuid.New()))
+	defer index.Close()
+
 	assert.Nil(t, index.Index([]*pb_test.Book{{Id: 1, Name: "t1"}, {Id: 2}, {Id: 3, Name: "t1"}}))
 
 	value := map[string]string{"Name": "T1"}
@@ -44,6 +50,8 @@ func TestIndexService_Parse(t *testing.T) {
 	t.Parallel()
 
 	index := gpa.NewIndexService[*pb_test.Book](filepath.Join(os.TempDir(), shortuuid.New()))
+	defer index.Close()
+
 	doc := index.Parse(&pb_test.Book{Id: 3, Name: "t3", Size: 3, Created: time.Now().Unix()})
 	count := 0
 

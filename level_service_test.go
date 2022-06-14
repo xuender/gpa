@@ -15,6 +15,8 @@ func TestLevelService_Save(t *testing.T) {
 	t.Parallel()
 
 	level := gpa.NewLevelService[*pb_test.Book](filepath.Join(os.TempDir(), shortuuid.New()))
+	defer level.Close()
+
 	assert.Nil(t, level.Save([]*pb_test.Book{{Id: 1}, {Id: 2}}))
 }
 
@@ -22,6 +24,8 @@ func TestLevelService_Load(t *testing.T) {
 	t.Parallel()
 
 	level := gpa.NewLevelService[*pb_test.Book](filepath.Join(os.TempDir(), shortuuid.New()))
+	defer level.Close()
+
 	assert.Nil(t, level.Save([]*pb_test.Book{{Id: 1, Name: "t1"}, {Id: 2, Name: "t2"}}))
 
 	data := []*pb_test.Book{{Id: 1}, {Id: 2}}

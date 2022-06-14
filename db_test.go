@@ -14,6 +14,8 @@ func TestNewDB(t *testing.T) {
 	t.Parallel()
 
 	db, err := gpa.NewMemory[*pb_test.Book]()
+	defer db.Close()
+
 	assert.NotNil(t, db)
 	assert.Nil(t, err)
 }
@@ -22,6 +24,8 @@ func TestDB_Load(t *testing.T) {
 	t.Parallel()
 
 	db := base.Must1(gpa.NewMemory[*pb_test.Book]())
+	defer db.Close()
+
 	assert.Nil(t, db.Save([]*pb_test.Book{{Id: 1, Name: "t1"}, {Id: 2, Name: "t2"}}...))
 
 	data := []*pb_test.Book{{Id: 1}, {Id: 2}}
@@ -34,6 +38,8 @@ func TestDB_Query(t *testing.T) {
 	t.Parallel()
 
 	db := base.Must1(gpa.NewMemory[*pb_test.Book]())
+	defer db.Close()
+
 	assert.Nil(t, db.Save([]*pb_test.Book{{Id: 1, Name: "t1"}, {Id: 2}, {Id: 3, Name: "t1"}}...))
 
 	value := map[string]string{"Name": "t1"}
@@ -49,6 +55,8 @@ func TestDB_Match(t *testing.T) {
 	t.Parallel()
 
 	db := base.Must1(gpa.NewMemory[*pb_test.Book]())
+	defer db.Close()
+
 	assert.Nil(t, db.Save([]*pb_test.Book{{Id: 1, Name: "t1"}, {Id: 2, Name: "t2"}, {Id: 3, Name: "t1"}}...))
 
 	docs, err := db.Match("t1")
