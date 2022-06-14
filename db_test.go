@@ -45,6 +45,21 @@ func TestDB_Query(t *testing.T) {
 	assert.Equal(t, 3, docs[1].Id)
 }
 
+func TestDB_Match(t *testing.T) {
+	t.Parallel()
+
+	db := base.Must1(gpa.NewTest[*pb_test.Book]())
+	assert.Nil(t, db.Save([]*pb_test.Book{{Id: 1, Name: "t1"}, {Id: 2, Name: "t2"}, {Id: 3, Name: "t1"}}...))
+
+	docs, err := db.Match("t1")
+	t.Log(docs)
+
+	// assert.Equal(t, 2, len(docs))
+	// assert.Equal(t, 1, docs[0].Id)
+	// assert.Equal(t, 3, docs[1].Id)
+	assert.Nil(t, err)
+}
+
 func TestNew(t *testing.T) {
 	t.Parallel()
 

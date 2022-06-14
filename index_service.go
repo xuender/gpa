@@ -73,6 +73,25 @@ func (p *IndexService[T]) Parse(doc Document) *bluge.Document {
 	return bdoc
 }
 
+func (p *IndexService[T]) Match(value string) (ids []uint64, err error) {
+	defer base.Recover(func(call error) { err = call })
+
+	reader := base.Must1(bluge.OpenReader(p.config))
+	defer reader.Close()
+
+	querys := []bluge.Query{}
+
+	for _, field := range p.fields {
+		if field.Type == Text {
+			querys = append(querys, bluge.NewMatchQuery(value).SetField(field.Name))
+		}
+	}
+
+	query := bluge.NewBooleanQuery().AddMust(querys...)
+
+	return p.search(query, reader)
+}
+
 func (p *IndexService[T]) Query(values map[string]string) (ids []uint64, err error) {
 	if len(values) == 0 {
 		return nil, nil
@@ -92,18 +111,19 @@ func (p *IndexService[T]) Query(values map[string]string) (ids []uint64, err err
 	}
 
 	query := bluge.NewBooleanQuery().AddMust(querys...)
-	request := bluge.NewTopNSearch(base.Ten, query).
-		WithStandardAggregations()
 
+	return p.search(query, reader)
+}
+
+func (p *IndexService[T]) search(query bluge.Query, reader *bluge.Reader) ([]uint64, error) {
+	ids := []uint64{}
+	request := bluge.NewTopNSearch(base.Ten, query).WithStandardAggregations()
 	iterator := base.Must1(reader.Search(context.Background(), request))
-	ids = []uint64{}
 
 	for {
 		match, iterr := iterator.Next()
 		if iterr != nil || match == nil {
-			err = iterr
-
-			return
+			return ids, iterr
 		}
 
 		base.Must(match.VisitStoredFields(func(field string, value []byte) bool {

@@ -53,12 +53,25 @@ func (p *DB[T]) Load(docs ...T) (err error) {
 	return p.ds.Load(docs)
 }
 
+func (p *DB[T]) Match(value string) (docs []T, err error) {
+	ids, err := p.is.Match(value)
+	if err != nil {
+		return nil, err
+	}
+
+	return p.LoadByID(ids...)
+}
+
 func (p *DB[T]) Query(values map[string]string) (docs []T, err error) {
 	ids, err := p.is.Query(values)
 	if err != nil {
 		return nil, err
 	}
 
+	return p.LoadByID(ids...)
+}
+
+func (p *DB[T]) LoadByID(ids ...uint64) (docs []T, err error) {
 	defer base.Recover(func(call error) { err = call })
 
 	var doc T

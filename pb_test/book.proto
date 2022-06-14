@@ -14,4 +14,6 @@ message Book {
 	// @gotags: gpa:"int"
 	int32 size = 4;
 	string context = 5;
+	// @gotags: gpa:"string"
+	string title = 6;
 }
