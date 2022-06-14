@@ -11,8 +11,8 @@ import (
 
 // IndexService 索引服务.
 type IndexService[T Document] struct {
-	config bluge.Config
 	fields map[int]*Field
+	writer *bluge.Writer
 }
 
 // NewIndexService 新建索引服务.
@@ -31,10 +31,22 @@ func NewIndexService[T Document](dir string) *IndexService[T] { // nolint
 		}
 	}
 
+	var config bluge.Config
+
+	if dir == "" {
+		config = bluge.InMemoryOnlyConfig()
+	} else {
+		config = bluge.DefaultConfig(dir)
+	}
+
 	return &IndexService[T]{
-		config: bluge.DefaultConfig(dir),
+		writer: base.Must1(bluge.OpenWriter(config)),
 		fields: fields,
 	}
+}
+
+func (p *IndexService[T]) Close() error {
+	return p.writer.Close()
 }
 
 // Index 索引.
@@ -45,9 +57,6 @@ func (p *IndexService[T]) Index(docs []T) (err error) {
 
 	defer base.Recover(func(call error) { err = call })
 
-	writer := base.Must1(bluge.OpenWriter(p.config))
-	defer writer.Close()
-
 	batch := bluge.NewBatch()
 
 	for _, doc := range docs {
@@ -56,7 +65,7 @@ func (p *IndexService[T]) Index(docs []T) (err error) {
 		batch.Update(bdoc.ID(), bdoc)
 	}
 
-	return writer.Batch(batch)
+	return p.writer.Batch(batch)
 }
 
 func (p *IndexService[T]) Parse(doc Document) *bluge.Document {
@@ -76,7 +85,7 @@ func (p *IndexService[T]) Parse(doc Document) *bluge.Document {
 func (p *IndexService[T]) Match(value string) (ids []uint64, err error) {
 	defer base.Recover(func(call error) { err = call })
 
-	reader := base.Must1(bluge.OpenReader(p.config))
+	reader := base.Must1(p.writer.Reader())
 	defer reader.Close()
 
 	querys := []bluge.Query{}
@@ -99,7 +108,7 @@ func (p *IndexService[T]) Query(values map[string]string) (ids []uint64, err err
 
 	defer base.Recover(func(call error) { err = call })
 
-	reader := base.Must1(bluge.OpenReader(p.config))
+	reader := base.Must1(p.writer.Reader())
 	defer reader.Close()
 
 	querys := make([]bluge.Query, len(values))

@@ -5,7 +5,6 @@ import (
 	"path/filepath"
 	"reflect"
 
-	"github.com/lithammer/shortuuid"
 	"github.com/xuender/gpa/pb"
 	"github.com/xuender/oils/base"
 	"github.com/xuender/oils/oss"
@@ -25,11 +24,16 @@ func NewDB[T Document](config *pb.Config) (*DB[T], error) {
 func NewDBByDir[T Document](dir string) (db *DB[T], err error) { // nolint
 	defer base.Recover(func(call error) { err = call })
 
-	docDir := base.Must1(oss.Abs(filepath.Join(dir, "doc")))
-	base.Must(os.MkdirAll(docDir, oss.DefaultDirFileMod))
+	var docDir string
+	var indexDir string
 
-	indexDir := base.Must1(oss.Abs(filepath.Join(dir, "index")))
-	base.Must(os.MkdirAll(indexDir, oss.DefaultDirFileMod))
+	if dir != "" {
+		docDir = base.Must1(oss.Abs(filepath.Join(dir, "doc")))
+		base.Must(os.MkdirAll(docDir, oss.DefaultDirFileMod))
+
+		indexDir = base.Must1(oss.Abs(filepath.Join(dir, "index")))
+		base.Must(os.MkdirAll(indexDir, oss.DefaultDirFileMod))
+	}
 
 	return &DB[T]{
 		ds: NewLevelService[T](docDir),
@@ -37,8 +41,12 @@ func NewDBByDir[T Document](dir string) (db *DB[T], err error) { // nolint
 	}, nil
 }
 
-func NewTest[T Document]() (*DB[T], error) {
-	return NewDBByDir[T](filepath.Join(os.TempDir(), shortuuid.New()))
+func NewMemory[T Document]() (*DB[T], error) {
+	return NewDBByDir[T]("")
+}
+
+func (p *DB[T]) Close() error {
+	return base.Errors(p.ds.Close(), p.is.Close())
 }
 
 func (p *DB[T]) Save(docs ...T) (err error) {

@@ -2,12 +2,14 @@ module github.com/xuender/gpa
 
 go 1.18
 
+// replace gitee.com/xuender/oils => ../oils
+
 require (
 	github.com/blugelabs/bluge v0.2.1
 	github.com/blugelabs/bluge_segment_api v0.2.0
 	github.com/lithammer/shortuuid v2.0.3+incompatible
 	github.com/syndtr/goleveldb v1.0.0
-	github.com/xuender/oils v0.2.15
+	github.com/xuender/oils v0.2.16
 	google.golang.org/protobuf v1.28.0
 )
 

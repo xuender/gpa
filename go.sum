@@ -117,8 +117,8 @@ github.com/syndtr/goleveldb v1.0.0 h1:fBdIW9lB4Iz0n9khmH8w27SJ3QEJ7+IgjPEwGSZiFd
 github.com/syndtr/goleveldb v1.0.0/go.mod h1:ZVVdQEZoIme9iO1Ch2Jdy24qqXrMMOU6lpPAyBWyWuQ=
 github.com/ugorji/go/codec v0.0.0-20181204163529-d75b2dcb6bc8/go.mod h1:VFNgLljTbGfSG7qAOspJ7OScBnGdDN/yBr0sguwnwf0=
 github.com/xordataexchange/crypt v0.0.3-0.20170626215501-b2862e3d0a77/go.mod h1:aYKd//L2LvnjZzWKhF00oedf4jCCReLcmhLdhm1A27Q=
-github.com/xuender/oils v0.2.15 h1:fKfF3AtRs2dm5CLyghEc7rYXMGkipvM+zoSm5bvAaBM=
-github.com/xuender/oils v0.2.15/go.mod h1:uUMk+O6InUECO0jcKqmXXGxPJgNMf3riCwPK9FWRgvU=
+github.com/xuender/oils v0.2.16 h1:HV2FVVPmTwTouaBCEalKyMIEUFzwpbCxY+Y047XG+XI=
+github.com/xuender/oils v0.2.16/go.mod h1:uUMk+O6InUECO0jcKqmXXGxPJgNMf3riCwPK9FWRgvU=
 github.com/yuin/goldmark v1.3.5/go.mod h1:mwnBkeHKe2W/ZEtQ+71ViKU8L12m81fl3OWwC1Zlc8k=
 go.uber.org/atomic v1.7.0/go.mod h1:fEN4uk6kAWBTFdckzkM89CLk9XfWZrxpCo0nPH17wJc=
 go.uber.org/atomic v1.9.0 h1:ECmE8Bn/WFTYwEW/bpKD3M8VtR/zQVbavAoalC1PYyE=

@@ -2,17 +2,30 @@ package gpa
 
 import (
 	"github.com/syndtr/goleveldb/leveldb"
+	"github.com/syndtr/goleveldb/leveldb/storage"
 	"github.com/xuender/oils/base"
 	"github.com/xuender/oils/logs"
 	"google.golang.org/protobuf/proto"
 )
 
 type LevelService[T Document] struct {
-	dir string
+	stor storage.Storage
 }
 
-func NewLevelService[T Document](dir string) *LevelService[T] {
-	return &LevelService[T]{dir: dir}
+func NewLevelService[T Document](dir string) *LevelService[T] { // nolint
+	var stor storage.Storage
+
+	if dir == "" {
+		stor = storage.NewMemStorage()
+	} else {
+		stor = base.Must1(storage.OpenFile(dir, false))
+	}
+
+	return &LevelService[T]{stor: stor}
+}
+
+func (p *LevelService[T]) Close() error {
+	return p.stor.Close()
 }
 
 func (p *LevelService[T]) Save(docs []T) (err error) {
@@ -22,7 +35,7 @@ func (p *LevelService[T]) Save(docs []T) (err error) {
 
 	defer base.Recover(func(call error) { err = call })
 
-	level := base.Must1(leveldb.OpenFile(p.dir, nil))
+	level := base.Must1(leveldb.Open(p.stor, nil))
 	defer level.Close()
 
 	batch := &leveldb.Batch{}
@@ -42,7 +55,7 @@ func (p *LevelService[T]) Load(docs []T) (err error) {
 
 	defer base.Recover(func(call error) { err = call })
 
-	level := base.Must1(leveldb.OpenFile(p.dir, nil))
+	level := base.Must1(leveldb.Open(p.stor, nil))
 	defer level.Close()
 
 	for _, doc := range docs {
