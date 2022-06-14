@@ -51,5 +51,5 @@ func TestIndexService_Parse(t *testing.T) {
 		count++
 	})
 
-	assert.Equal(t, 4, count)
+	assert.Equal(t, 5, count)
 }

@@ -54,9 +54,9 @@ func TestDB_Match(t *testing.T) {
 	docs, err := db.Match("t1")
 	t.Log(docs)
 
-	// assert.Equal(t, 2, len(docs))
-	// assert.Equal(t, 1, docs[0].Id)
-	// assert.Equal(t, 3, docs[1].Id)
+	assert.Equal(t, 2, len(docs))
+	assert.Equal(t, 1, docs[0].Id)
+	assert.Equal(t, 3, docs[1].Id)
 	assert.Nil(t, err)
 }
 

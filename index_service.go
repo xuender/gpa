@@ -87,7 +87,7 @@ func (p *IndexService[T]) Match(value string) (ids []uint64, err error) {
 		}
 	}
 
-	query := bluge.NewBooleanQuery().AddMust(querys...)
+	query := bluge.NewBooleanQuery().AddShould(querys...)
 
 	return p.search(query, reader)
 }
