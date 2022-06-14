@@ -9,5 +9,10 @@ test:
 clean:
 	rm -rf dist
 
+proto:
+	protoc --go_out=. pb/*.proto
+	protoc --go_out=. pb_test/*.proto
+	protoc-go-inject-tag -input=./pb_test/*.pb.go
+
 build:
 	go build -o dist/gpa main.go

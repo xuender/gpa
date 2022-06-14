@@ -1,0 +1,17 @@
+syntax = "proto3";
+package pb_test;
+option go_package = "./pb_test";
+
+// Book 图书.
+message Book {
+	// Id 主键.
+  uint64 id = 1;
+	// Name 名称.
+	// @gotags: gpa:"string"
+  string name = 2;
+	// @gotags: gpa:"time"
+	int64 created = 3;
+	// @gotags: gpa:"int"
+	int32 size = 4;
+	string context = 5;
+}

@@ -1,0 +1,9 @@
+syntax = "proto3";
+package pb;
+option go_package = "./pb";
+
+// Config 数据库配置.
+message Config {
+	// Dir 数据目录.
+	string dir = 1;
+}
