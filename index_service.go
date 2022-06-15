@@ -6,7 +6,6 @@ import (
 
 	"github.com/blugelabs/bluge"
 	"github.com/xuender/oils/base"
-	"github.com/xuender/oils/logs"
 )
 
 // IndexService 索引服务.
@@ -74,7 +73,6 @@ func (p *IndexService[T]) Parse(doc Document) *bluge.Document {
 
 	for index, field := range p.fields {
 		if bfield := field.Field(value.Field(index)); bfield != nil {
-			logs.Debugw("parse", "name", field.Name, "field", field.Type, "value", value.Field(index))
 			bdoc.AddField(bfield)
 		}
 	}

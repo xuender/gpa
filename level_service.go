@@ -4,7 +4,6 @@ import (
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/syndtr/goleveldb/leveldb/storage"
 	"github.com/xuender/oils/base"
-	"github.com/xuender/oils/logs"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -41,7 +40,6 @@ func (p *LevelService[T]) Save(docs []T) (err error) {
 	batch := &leveldb.Batch{}
 
 	for _, doc := range docs {
-		logs.Debugw("save", "doc", doc)
 		batch.Put(base.Number2Bytes(doc.GetId()), base.Must1(proto.Marshal(doc)))
 	}
 
